@@ -3,49 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>链接大全</title>
+    <title>hello~</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
             font-family: 'Arial', sans-serif;
-            color: #333;
+            color: #fff;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.5s;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b); /* 初始背景颜色 */
         }
-        h1, h3 {
+        .intro {
             text-align: center;
+            margin: 20px;
         }
         .card-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            gap: 20px;
+            padding: 20px;
         }
         .card {
-            background-color: #ffffff;
+            background-color: #333;
             padding: 20px;
-            border: none;
             border-radius: 15px;
-            margin: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s, box-shadow 0.3s;
             width: 220px;
             text-align: center;
+            color: #fff;
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
         }
         .card a {
             text-decoration: none;
-            color: #007bff;
+            color: #ff7e5f;
             font-weight: bold;
             display: block;
             padding: 10px;
             font-size: 18px;
         }
         .card a:hover {
-            color: #0056b3;
+            color: #feb47b;
         }
         .card i {
             margin-right: 10px;
@@ -53,127 +60,139 @@
         }
         footer {
             text-align: center;
-            margin-top: 20px;
+            margin-top: auto;
+            padding: 20px;
+            color: #fff;
+            background: #ff7e5f; /* 初始页脚颜色 */
+            transition: background 0.5s;
+        }
+        .color-picker {
+            margin: 20px;
+            text-align: center;
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .color-picker label {
+            margin-right: 10px;
+            font-size: 18px;
+            color: #fff;
+        }
+        .color-picker input {
+            margin-right: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>哈哈哈</h1>
-    <h3>学习机也可以使用网站辣</h3>
-    <a href="https://code.xueersi.com/home/project/detail?lang=code&pid=55198086&version=webpy&form=webpy&langType=webpy"><h3>点我投稿</h3></a>
-    <h3>可多工作室制作！</h3>
-
-    <div class="card-container">
-        <div class="card">
-            <a href="https://www.baidu.com" target="_blank"><i class="fas fa-search"></i> 百度</a>
-        </div>
-        <div class="card">
-            <a href="https://www.google.com" target="_blank"><i class="fab fa-google"></i> Google(要梯子....吧)</a>
-        </div>
-        <div class="card">
-            <a href="https://www.taobao.com" target="_blank"><i class="fas fa-shopping-cart"></i> 淘宝</a>
-        </div>
-        <div class="card">
-            <a href="https://www.douyin.com/" target="_blank"><i class="fas fa-video"></i> 抖音</a>
-        </div>
-        <div class="card">
-            <a href="https://www.weibo.com" target="_blank"><i class="fab fa-weibo"></i> 微博</a>
-        </div>
-        <div class="card">
-            <a href="https://www.github.com" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-        </div>
-        <div class="card">
-            <a href="https://ckim.czoffice.top" target="_blank"><i class="fas fa-link"></i> ckim</a>
-        </div>
-        <div class="card">
-            <a href="https://www.ccw.site/student/65d423c0a65f1229b0d80fb0" target="_blank"><i class="fab fa-bilibili"></i> ccw(共创)</a>
-        </div>
-        <div class="card">
-            <a href="https://space.bilibili.com/3537115203767153" target="_blank"><i class="fab fa-bilibili"></i> bilibili</a>
-        </div>
-        <div class="card">
-            <a href="https://code.xueersi.com" target="_blank"><i class="fas fa-desktop"></i> c站电脑端</a>
-        </div>
-        <div class="card">
-            <a href="https://kdgzswsz.github.io/" target="_blank"><i class="fas fa-globe"></i> 可多工作室官网</a>
-        </div>
-        <div class="card">
-            <a href="https://code.xueersi.com/class/list" target="_blank"><i class="fas fa-book"></i> 学而思学习中心</a>
-        </div>
-        <div class="card">
-            <a href="https://scratch.mit.edu/" target="_blank"><i class="fas fa-puzzle-piece"></i> scratch社区</a>
-        </div>
-        <div class="card">
-            <a href="https://neal.fun/design-the-next-iphone/" target="_blank"><i class="fas fa-apple"></i> 设计你的iphone！</a>
-        </div>
-        <div class="card">
-            <a href="http://l.fmcraft.cn/" target="_blank"><i class="fas fa-comments"></i> DHE BBS</a>
-        </div>
-        <div class="card">
-            <a href="https://poki.com/zh#utm_source=redirect-en-zh" target="_blank"><i class="fas fa-gamepad"></i> poki</a>
-        </div>
-        <div class="card">
-            <a href="https://www.kuaishou.com/new-reco" target="_blank"><i class="fas fa-camera"></i> 快手</a>
-        </div>
-        <div class="card">
-            <a href="https://www.geogebra.org/scientific?lang=zh_CN" target="_blank"><i class="fas fa-calculator"></i> 科学计算机</a>
-        </div>
-        <div class="card">
-            <a href="https://fanyi.baidu.com/mtpe-individual/multimodal#/" target="_blank"><i class="fas fa-language"></i> 百度翻译</a>
-        </div>
-        <div class="card">
-            <a href="https://www.tutieshi.com/mosaic/" target="_blank"><i class="fas fa-magic"></i> 打码神器</a>
-        </div>
-        <div class="card">
-            <a href="https://code.xueersi.com/home/project/detail?lang=scratch&pid=24808914&version=3.0&langType=scratch" target="_blank"><i class="fas fa-star"></i> 可多推荐————家长不让我玩手机(1)</a>
-        </div>
-        <div class="card">
-            <a href="https://youku.com/" target="_blank"><i class="fas fa-video"></i> 优酷</a>
-        </div>
-        <div class="card">
-            <a href="https://zhzabcd-cloudreve.hf.space/home?path=%2F" target="_blank"><i class="fas fa-cloud"></i> 网盘(zhz制作)</a>
-        </div>
-        <div class="card">
-            <a href="https://livefile.xesimg.com/programme/python_assets/7177e6bbc910de98e90d1b5fcfb9bc62.html" target="_blank"><i class="fas fa-cube"></i> MC！！！</a>
-        </div>
-        <div class="card">
-            <a href="https://cn.bing.com/" target="_blank"><i class="fas fa-search"></i> 必应</a>
-        </div>
-        <div class="card">
-            <a href="https://kdgzswsz.github.io/ysygw/" target="_blank"><i class="fas fa-paw"></i> 有兽焉官网</a>
-        </div>
-        <div class="card">
-            <a href="https://www.xiaohongshu.com/explore" target="_blank"><i class="fas fa-heart"></i> 小红书</a>
-        </div>
-        <div class="card">
-            <a href="https://ys.mihoyo.com/" target="_blank"><i class="fas fa-gamepad"></i> 原神，启动！</a>
-        </div>
-        <div class="card">
-            <a href="https://cg.163.com/#/mobile" target="_blank"><i class="fas fa-cloud"></i> 网易云游戏</a>
-        </div>
-        <div class="card">
-            <a href="https://www.youtube.com" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
-        </div>
-        <div class="card">
-            <a href="https://translate.google.com/?hl=zh-CN" target="_blank"><i class="fab fa-google"></i> Google翻译</a>
-        </div>
-        <div class="card">
-            <a href="https://hao.qq.com" target="_blank"><i class="fab fa-qq"></i> QQ浏览器</a>
-        </div>
-        <div class="card">
-            <a href="https://qq.com" target="_blank"><i class="fab fa-tencent"></i> 腾讯网</a>
-        </div>
-        <div class="card">
-            <a href="https://qq.com" target="_blank"><i class="fab fa-qq"></i> QQ官网</a>
-        </div>
-        <div class="card">
-            <a href="https://code.xueersi.com/home/project/detail?lang=code&pid=55198086&version=webpy&form=webpy&langType=webpy" target="_blank"><i class="fas fa-plus"></i> 还想看其他的网站？点我投稿.</a>
-        </div>
+    <div class="intro">
+        <h1>学习机也可以访问网站辣！</h1>
+        <h3>欢迎来到可多工作室制作的网站！</h3>
     </div>
 
-    <footer>
-        <h3>版本：v1.1.5 增加了更多网站   更改了页面布局   增加渐变色背景   增加图标</h3>
+    <div class="color-picker">
+        <label for="bg-color">背景色:</label>
+        <input type="color" id="bg-color" value="#ff7e5f">
+        <label for="card-color">卡片色:</label>
+        <input type="color" id="card-color" value="#333">
+    </div>
+
+    <div class="card-container" id="card-container">
+        <!-- 卡片将通过JavaScript动态生成 -->
+    </div>
+
+    <footer id="footer">
+        <a href="https://code.xueersi.com/home/project/detail?lang=code&pid=55198086&version=webpy&form=webpy&langType=webpy"><h3>点我投稿</h3></a>
+        <h3>版本：v1.1.7 增加了更多网站   增加广告(doge)   增加一堆东西</h3>
         <p>© 2024   版权归 可多工作室 所有</p>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cardData = [
+                { href: 'https://code.xueersi.com/home/project/detail?lang=code&pid=55198086&version=webpy&form=webpy&langType=webpy', icon: 'fab fa-google-play', text: '广告位招租' },
+                { href: 'https://www.baidu.com', icon: 'fas fa-search', text: '百度' },
+                { href: 'https://www.google.com', icon: 'fab fa-google', text: 'Google(要梯子....吧)' },
+                { href: 'https://www.taobao.com', icon: 'fas fa-shopping-cart', text: '淘宝' },
+                { href: 'https://www.douyin.com/', icon: 'fas fa-video', text: '抖音' },
+                { href: 'https://www.weibo.com', icon: 'fab fa-weibo', text: '微博' },
+                { href: 'https://www.github.com', icon: 'fab fa-github', text: 'GitHub' },
+                { href: 'https://ckim.czoffice.top', icon: 'fas fa-link', text: 'ckim' },
+                { href: 'https://www.ccw.site/student/65d423c0a65f1229b0d80fb0', icon: 'fab fa-bilibili', text: 'ccw(共创)' },
+                { href: 'https://space.bilibili.com/3537115203767153', icon: 'fab fa-bilibili', text: 'bilibili' },
+                { href: 'https://code.xueersi.com', icon: 'fas fa-desktop', text: 'c站电脑端' },
+                { href: 'https://kdgzswsz.github.io/', icon: 'fas fa-globe', text: '可多工作室官网' },
+                { href: 'https://code.xueersi.com/class/list', icon: 'fas fa-book', text: '学而思学习中心' },
+                { href: 'https://scratch.mit.edu/', icon: 'fas fa-puzzle-piece', text: 'scratch社区' },
+                { href: 'https://neal.fun/design-the-next-iphone/', icon: 'fas fa-apple', text: '设计你的iphone！' },
+                { href: 'http://l.fmcraft.cn/', icon: 'fas fa-comments', text: 'DHE BBS' },
+                { href: 'https://poki.com/zh#utm_source=redirect-en-zh', icon: 'fas fa-gamepad', text: 'poki' },
+                { href: 'https://www.kuaishou.com/new-reco', icon: 'fas fa-camera', text: '快手' },
+                { href: 'https://www.geogebra.org/scientific?lang=zh_CN', icon: 'fas fa-calculator', text: '科学计算机' },
+                { href: 'https://fanyi.baidu.com/mtpe-individual/multimodal#/', icon: 'fas fa-language', text: '百度翻译' },
+                { href: 'https://www.tutieshi.com/mosaic/', icon: 'fas fa-magic', text: '打码神器' },
+                { href: 'https://code.xueersi.com/home/project/detail?lang=scratch&pid=24808914&version=3.0&langType=scratch', icon: 'fas fa-star', text: '可多推荐————家长不让我玩手机(1)' },
+                { href: 'https://youku.com/', icon: 'fas fa-video', text: '优酷' },
+                { href: 'https://zhzabcd-cloudreve.hf.space/home?path=%2F', icon: 'fas fa-cloud', text: '网盘(zhz制作)' },
+                { href: 'https://mc.js.cool/', icon: 'fas fa-cube', text: 'MC（触碰版）' },
+                { href: 'https://cn.bing.com/', icon: 'fas fa-search', text: '必应' },
+                { href: 'https://code.xueersi.com/tools/help', icon: 'fas fa-paw', text: '新人必看' },
+                { href: 'https://www.xiaohongshu.com/explore', icon: 'fas fa-heart', text: '小红书' },
+                { href: 'https://ys.mihoyo.com/', icon: 'fas fa-gamepad', text: '原神，启动！' },
+                { href: 'https://cg.163.com/#/mobile', icon: 'fas fa-cloud', text: '网易云游戏' },
+                { href: 'https://www.youtube.com', icon: 'fab fa-youtube', text: 'YouTube' },
+                { href: 'https://translate.google.com/?hl=zh-CN', icon: 'fab fa-google', text: 'Google翻译' },
+                { href: 'https://hao.qq.com', icon: 'fab fa-qq', text: 'QQ浏览器' },
+                { href: 'https://qq.com', icon: 'fab fa-tencent', text: '腾讯网' },
+                { href: 'https://www.identityvgame.com/tw/index.html?re=1', icon: 'fab fa-google-play', text: '第五人格官网' },
+                { href: 'https://www.qimao.com', icon: 'fab fa-google-play', text: '七猫' },
+                { href: 'https://fanqienovel.com', icon: 'fab fa-google-play', text: '番茄小说' },
+                { href: 'https://news.sina.com.cn', icon: 'fab fa-sina', text: '新浪新闻' }
+            ];
+
+            const cardContainer = document.getElementById('card-container');
+            
+            cardData.forEach(data => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<a href="${data.href}" target="_blank"><i class="${data.icon}"></i>${data.text}</a>`;
+                cardContainer.appendChild(card);
+            });
+
+            const bgColorInput = document.getElementById('bg-color');
+            const cardColorInput = document.getElementById('card-color');
+            const body = document.body;
+            const cards = document.querySelectorAll('.card');
+            const footer = document.getElementById('footer');
+
+            // Initialize colors from localStorage
+            const savedBgColor = localStorage.getItem('bgColor') || '#ff7e5f';
+            const savedCardColor = localStorage.getItem('cardColor') || '#333';
+
+            body.style.background = `linear-gradient(135deg, ${savedBgColor}, #feb47b)`;
+            cards.forEach(card => card.style.backgroundColor = savedCardColor);
+            footer.style.backgroundColor = savedBgColor;
+
+            bgColorInput.value = savedBgColor;
+            cardColorInput.value = savedCardColor;
+
+            bgColorInput.addEventListener('input', () => {
+                const newBgColor = bgColorInput.value;
+                body.style.background = `linear-gradient(135deg, ${newBgColor}, #feb47b)`;
+                footer.style.backgroundColor = newBgColor;
+                localStorage.setItem('bgColor', newBgColor);
+            });
+
+            cardColorInput.addEventListener('input', () => {
+                const newCardColor = cardColorInput.value;
+                cards.forEach(card => {
+                    card.style.backgroundColor = newCardColor;
+                });
+                localStorage.setItem('cardColor', newCardColor);
+            });
+        });
+    </script>
 </body>
 </html>
