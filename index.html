@@ -1,196 +1,55 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hello~</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>XXJ AW - 升级中</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            color: #fff;
-            margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            transition: background 0.5s;
-            background: linear-gradient(135deg, #ff7e5f, #feb47b); /* 初始背景颜色 */
-        }
-        .intro {
-            text-align: center;
-            margin: 20px;
-        }
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
-            padding: 20px;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            color: #333;
         }
-        .card {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 220px;
+
+        .container {
             text-align: center;
-            color: #fff;
         }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+
+        .spinner {
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 6px solid #ccc;
+            border-top: 6px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        .card a {
-            text-decoration: none;
-            color: #ff7e5f;
-            font-weight: bold;
-            display: block;
-            padding: 10px;
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
             font-size: 18px;
-        }
-        .card a:hover {
-            color: #feb47b;
-        }
-        .card i {
-            margin-right: 10px;
-            font-size: 24px;
-        }
-        footer {
-            text-align: center;
-            margin-top: auto;
-            padding: 20px;
-            color: #fff;
-            background: #ff7e5f; /* 初始页脚颜色 */
-            transition: background 0.5s;
-        }
-        .color-picker {
-            margin: 20px;
-            text-align: center;
-            position: fixed;
-            right: 20px;
-            top: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .color-picker label {
-            margin-right: 10px;
-            font-size: 18px;
-            color: #fff;
-        }
-        .color-picker input {
-            margin-right: 20px;
+            margin-top: 20px;
+            line-height: 1.6; /* 调整行间距 */
         }
     </style>
 </head>
 <body>
-    <div class="intro">
-        <h1>学习机也可以访问网站辣！</h1>
-        <h3>欢迎来到可多工作室制作的网站！</h3>
+    <div class="container">
+        <div class="spinner"></div>
+        <div class="message">
+            xxj aw 正在升级<br>
+            更新内容：可以自定义你的网站啦！爽到飞起！💨<br>
+            预计8:30之前升级完毕，请稍候...
+        </div>
     </div>
-
-    <div class="color-picker">
-        <label for="bg-color">背景色:</label>
-        <input type="color" id="bg-color" value="#ff7e5f">
-        <label for="card-color">卡片色:</label>
-        <input type="color" id="card-color" value="#333">
-    </div>
-
-    <div class="card-container" id="card-container">
-        <!-- 卡片将通过JavaScript动态生成 -->
-    </div>
-
-    <footer id="footer">
-        <a href="https://code.xueersi.com/home/project/detail?lang=code&pid=55198086&version=webpy&form=webpy&langType=webpy"><h3>点我投稿</h3></a>
-        <h3>版本：v1.1.7 增加了更多网站   增加广告(doge)   增加一堆东西</h3>
-        <p>© 2024   版权归 可多工作室 所有</p>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cardData = [
-                { href: 'https://www.baidu.com', icon: 'fas fa-search', text: '百度' },
-                { href: 'https://www.taobao.com', icon: 'fas fa-shopping-cart', text: '淘宝' },
-                { href: 'https://www.douyin.com/user/self', icon: 'fas fa-video', text: '抖音' },
-                { href: 'https://www.weibo.com', icon: 'fab fa-weibo', text: '微博' },
-                { href: 'https://www.pinduoduo.com/', icon: 'fab fa-github', text: '拼多多' },
-                { href: 'https://lcim.guozhufeng.com', icon: 'fas fa-link', text: '凌CIM' },
-                { href: 'https://www.ccw.site/student/65d423c0a65f1229b0d80fb0', icon: 'fab fa-bilibili', text: 'ccw' },
-                { href: 'https://space.bilibili.com/3537115203767153', icon: 'fab fa-bilibili', text: 'bilibili' },
-                { href: 'https://code.xueersi.com', icon: 'fas fa-desktop', text: 'c站电脑端' },
-                { href: 'https://kdgzswsz.github.io/', icon: 'fas fa-globe', text: '可多工作室官网' },
-                { href: 'https://code.xueersi.com/class/list', icon: 'fas fa-book', text: '学而思学习中心' },
-                { href: 'https://scratch.mit.edu/', icon: 'fas fa-puzzle-piece', text: 'scratch社区' },
-                { href: 'https://neal.fun/design-the-next-iphone/', icon: 'fas fa-apple', text: '设计你的iPhone！' },
-                { href: 'http://l.fmcraft.cn/', icon: 'fas fa-comments', text: 'DHE BBS' },
-                { href: 'https://poki.com/zh#utm_source=redirect-en-zh', icon: 'fas fa-gamepad', text: 'poki' },
-                { href: 'https://www.kuaishou.com/new-reco', icon: 'fas fa-camera', text: '快手' },
-                { href: 'https://www.geogebra.org/scientific?lang=zh_CN', icon: 'fas fa-calculator', text: '科学计算器' },
-                { href: 'https://fanyi.baidu.com/mtpe-individual/multimodal#/', icon: 'fas fa-language', text: '百度翻译' },
-                { href: 'https://www.tutieshi.com/mosaic/', icon: 'fas fa-magic', text: '打码神器' },
-                { href: 'https://pvp.qq.com', icon: 'fas fa-trophy', text: '王者荣誉' },
-                { href: 'https://youku.com/', icon: 'fas fa-video', text: '优酷' },
-                { href: 'https://pan.baidu.com/disk/main#/index?category=all', icon: 'fas fa-cloud', text: '百度网盘' },
-                { href: 'https://mc.js.cool/', icon: 'fas fa-cube', text: 'MC（触碰版）' },
-                { href: 'https://cn.bing.com/', icon: 'fas fa-search', text: '必应' },
-                { href: 'https://code.xueersi.com/tools/help', icon: 'fas fa-paw', text: '学而思新人必看' },
-                { href: 'https://www.xiaohongshu.com/explore', icon: 'fas fa-heart', text: '小红书' },
-                { href: 'https://ys.mihoyo.com/', icon: 'fas fa-gamepad', text: '原神' },
-                { href: 'https://cg.163.com/#/mobile', icon: 'fas fa-cloud', text: '网易云游戏' },
-                { href: 'https://www.youtube.com', icon: 'fab fa-youtube', text: 'YouTube' },
-                { href: 'https://www.wegame.com.cn/wukong', icon: 'fab fa-google', text: '黑神话:悟空'},
-                { href: 'https://hao.qq.com', icon: 'fab fa-qq', text: '腾讯网' },
-                { href: 'https://www.identityvgame.com', icon: 'fab fa-google-play', text: '第五人格' },
-                { href: 'https://www.qimao.com', icon: 'fas fa-book', text: '七猫' },
-                { href: 'https://fanqienovel.com', icon: 'fas fa-book', text: '番茄小说' },
-                { href: 'https://www.sina.com.cn', icon: 'fab fa-twitter', text: '新浪新闻' },
-                { href: 'https://www.kugou.com', icon: 'fas fa-music', text: '酷狗音乐' },
-            ];
-
-            const cardContainer = document.getElementById('card-container');
-            
-            cardData.forEach(data => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<a href="${data.href}" target="_blank"><i class="${data.icon}"></i>${data.text}</a>`;
-                cardContainer.appendChild(card);
-            });
-
-            const bgColorInput = document.getElementById('bg-color');
-            const cardColorInput = document.getElementById('card-color');
-            const body = document.body;
-            const cards = document.querySelectorAll('.card');
-            const footer = document.getElementById('footer');
-
-            // Initialize colors from localStorage
-            const savedBgColor = localStorage.getItem('bgColor') || '#ff7e5f';
-            const savedCardColor = localStorage.getItem('cardColor') || '#333';
-
-            body.style.background = `linear-gradient(135deg, ${savedBgColor}, #feb47b)`;
-            cards.forEach(card => card.style.backgroundColor = savedCardColor);
-            footer.style.backgroundColor = savedBgColor;
-
-            bgColorInput.value = savedBgColor;
-            cardColorInput.value = savedCardColor;
-
-            bgColorInput.addEventListener('input', () => {
-                const newBgColor = bgColorInput.value;
-                body.style.background = `linear-gradient(135deg, ${newBgColor}, #feb47b)`;
-                footer.style.backgroundColor = newBgColor;
-                localStorage.setItem('bgColor', newBgColor);
-            });
-
-            cardColorInput.addEventListener('input', () => {
-                const newCardColor = cardColorInput.value;
-                cards.forEach(card => {
-                    card.style.backgroundColor = newCardColor;
-                });
-                localStorage.setItem('cardColor', newCardColor);
-            });
-        });
-    </script>
 </body>
 </html>
