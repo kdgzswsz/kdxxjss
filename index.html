@@ -200,9 +200,7 @@
         <input type="color" id="card-color" value="#444">
     </div>
 
-    <div class="card-container" id="card-container">
-        <!-- 初始卡片将在这里显示 -->
-    </div>
+    <div class="card-container" id="card-container"></div>
 
     <div class="add-card-button" id="add-card-btn">
         <i class="fas fa-plus"></i>
@@ -245,7 +243,6 @@
                 { href: 'https://fanqienovel.com', icon: 'fas fa-book', text: '番茄小说' },
                 { href: 'https://www.xiaohongshu.com/explore', icon: 'fas fa-heart', text: '小红书' },
                 { href: 'https://www.kugou.com', icon: 'fas fa-music', text: '酷狗音乐' },
-
             ];
 
             const cardContainer = document.getElementById('card-container');
@@ -254,7 +251,7 @@
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
                 cardElement.innerHTML = `
-                    <a href="${card.href}" target="_blank">
+                    <a href="${card.href}">
                         <i class="${card.icon}"></i>${card.text}
                     </a>
                 `;
