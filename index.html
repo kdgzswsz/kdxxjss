@@ -1,67 +1,126 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xxkaw版本选择</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-        .container {
-            text-align: center;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .btn {
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .new-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .old-btn {
-            background-color: #2196F3;
-            color: white;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>xxkaw版本选择</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .new-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .old-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+    .info-btn {
+      background-color: #ff9800;
+      color: white;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    #info-text {
+      margin-top: 20px;
+      display: none;
+      color: #555;
+      font-size: 14px;
+    }
+    .link {
+      color: #007BFF;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    #choice-box {
+      margin-top: 15px;
+      display: none;
+    }
+    .choice-btn {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      background-color: #666;
+      color: white;
+      cursor: pointer;
+    }
+    .choice-btn:hover {
+      background-color: #444;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>请选择xxjaw版本</h1>
-        <button class="btn new-btn" onclick="openNewVersion()">新版</button>
-        <button class="btn old-btn" onclick="openOldVersion()">旧版</button>
+  <div class="container">
+    <h1>请选择xxjaw版本</h1>
+    <button class="btn new-btn" onclick="openNewVersion()">新版</button>
+    <button class="btn old-btn" onclick="openOldVersion()">旧版</button>
+    <button class="btn info-btn" onclick="toggleInfo()">显示说明</button>
+    
+    <div id="info-text">
+      新版提供更好的性能与体验，推荐使用新版；如需兼容旧系统可选择旧版。了解更多请访问 <span class="link" onclick="showChoice()">我们</span>。
+      <div id="choice-box">
+        <button class="choice-btn" onclick="gotoC()">前往 C 站</button>
+        <button class="choice-btn" onclick="gotoB()">前往 B 站</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        function openNewVersion() {
-            window.location.href = "xbxxjaw.html";
-        }
-        
-        function openOldVersion() {
-            window.location.href = "kdss.html";
-        }
-    </script>
+  <script>
+    function openNewVersion() {
+      window.location.href = "xbxxjaw.html";
+    }
+
+    function openOldVersion() {
+      window.location.href = "kdss.html";
+    }
+
+    function toggleInfo() {
+      var info = document.getElementById("info-text");
+      info.style.display = (info.style.display === "none") ? "block" : "none";
+    }
+
+    function showChoice() {
+      var box = document.getElementById("choice-box");
+      box.style.display = (box.style.display === "none") ? "block" : "none";
+    }
+
+    function gotoC() {
+      window.location.href = "https://code.xueersi.com/space/9909258?to=homepages";
+    }
+
+    function gotoB() {
+      window.location.href = "https://space.bilibili.com/3537115203767153";
+    }
+  </script>
 </body>
 </html>
