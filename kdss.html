@@ -176,9 +176,88 @@
             border-radius: 20px;
             color: #fff;
         }
+        
+        /* 新增的帮助按钮样式 */
+        .help-button {
+            font-size: 35px;
+            color: #fff;
+            cursor: pointer;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            z-index: 100;
+        }
+
+        .help-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .help-menu {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+        }
+
+        .help-menu button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .help-menu button.active {
+            background: #4b6cb7;
+            color: white;
+        }
+
+        .help-menu button:not(.active) {
+            background: #444;
+            color: white;
+        }
+
+        .help-menu button:hover {
+            background: #182848;
+            color: white;
+        }
+        
+        /* 返回按钮样式 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .back-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
     </style>
 </head>
 <body>
+    <button class="back-button" id="back-btn"><i class="fas fa-arrow-left"></i> 返回</button>
+
     <div class="intro">
         <div class="about-us-icon">
             <i class="fas fa-info-circle"></i>
@@ -202,6 +281,16 @@
 
     <div class="card-container" id="card-container"></div>
 
+    <!-- 新增的帮助按钮和菜单 -->
+    <div class="help-button" id="help-btn">
+        <i class="fas fa-question-circle"></i>
+    </div>
+
+    <div class="help-menu" id="help-menu">
+        <button id="embed-mode-btn">嵌入模式</button>
+        <button id="redirect-mode-btn">跳转模式</button>
+    </div>
+
     <div class="add-card-button" id="add-card-btn">
         <i class="fas fa-plus"></i>
     </div>
@@ -219,6 +308,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 从本地存储获取打开方式设置，默认为嵌入模式
+            let openMode = localStorage.getItem('openMode') || 'embed';
+            
             const cardData = JSON.parse(localStorage.getItem('cards')) || [
                 { href: 'https://space.bilibili.com/3537115203767153', icon: 'fas fa-search', text: 'b站' },
                 { href: 'https://space.bilibili.com/3537115203767153?spm_id_from=333.1007.0.0', icon: 'fas fa-search', text: 'b站' },
@@ -248,64 +340,170 @@
             ];
 
             const cardContainer = document.getElementById('card-container');
+            const backBtn = document.getElementById('back-btn');
+            let originalContent = null;
 
             function createCard(card) {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card';
-                cardElement.innerHTML = `
-                    <a href="${card.href}">
-                        <i class="${card.icon}"></i>${card.text}
-                    </a>
-                `;
+                
+                // 根据当前模式创建链接
+                if (openMode === 'embed') {
+                    // 嵌入模式 - 点击后替换整个页面内容
+                    cardElement.innerHTML = `
+                        <a href="#" onclick="event.preventDefault(); embedPage('${card.href}')">
+                            <i class="${card.icon}"></i>${card.text}
+                        </a>
+                    `;
+                } else {
+                    // 跳转模式 - 直接跳转
+                    cardElement.innerHTML = `
+                        <a href="${card.href}" target="_blank">
+                            <i class="${card.icon}"></i>${card.text}
+                        </a>
+                    `;
+                }
+                
                 cardContainer.appendChild(cardElement);
             }
 
-            cardData.forEach(createCard);
+            // 全局函数，用于嵌入页面
+            window.embedPage = function(url) {
+                // 保存原始内容
+                if (!originalContent) {
+                    originalContent = document.body.innerHTML;
+                }
+                
+                // 清空body并添加返回按钮
+                document.body.innerHTML = '';
+                document.body.appendChild(backBtn);
+                backBtn.style.display = 'block';
+                
+                // 创建iframe
+                const iframe = document.createElement('iframe');
+                iframe.src = url;
+                iframe.style.width = '100%';
+                iframe.style.height = '100vh';
+                iframe.style.border = 'none';
+                
+                document.body.appendChild(iframe);
+            };
 
-            const addCardBtn = document.getElementById('add-card-btn');
-            const customCardForm = document.getElementById('custom-card-form');
-            const submitCardBtn = document.getElementById('submit-card');
-
-            addCardBtn.addEventListener('click', () => {
-                customCardForm.style.display = customCardForm.style.display === 'block' ? 'none' : 'block';
-            });
-
-            submitCardBtn.addEventListener('click', () => {
-                const customText = document.getElementById('custom-text').value.trim();
-                const customLink = document.getElementById('custom-link').value.trim();
-                if (customText && customLink) {
-                    const newCard = {
-                        href: customLink,
-                        icon: 'fas fa-globe',
-                        text: customText
-                    };
-                    cardData.push(newCard);
-                    createCard(newCard);
-                    localStorage.setItem('cards', JSON.stringify(cardData));
-                    customCardForm.style.display = 'none';
+            // 返回按钮功能
+            backBtn.addEventListener('click', () => {
+                if (originalContent) {
+                    document.body.innerHTML = originalContent;
+                    originalContent = null;
+                    // 重新初始化页面
+                    initializePage();
                 }
             });
 
-            const aboutUsIcon = document.querySelector('.about-us-icon');
-            const aboutUsInfo = document.getElementById('about-us-info');
-
-            aboutUsIcon.addEventListener('click', () => {
-                aboutUsInfo.style.display = aboutUsInfo.style.display === 'block' ? 'none' : 'block';
-            });
-
-            const bgColorInput = document.getElementById('bg-color');
-            const cardColorInput = document.getElementById('card-color');
-
-            bgColorInput.addEventListener('input', (e) => {
-                document.body.style.background = e.target.value;
-                document.querySelector('footer').style.background = e.target.value;
-            });
-
-            cardColorInput.addEventListener('input', (e) => {
-                document.querySelectorAll('.card').forEach(card => {
-                    card.style.backgroundColor = e.target.value;
+            // 初始化卡片
+            function initializeCards() {
+                cardContainer.innerHTML = ''; // 清空现有卡片
+                cardData.forEach(createCard); // 重新创建卡片
+            }
+            
+            // 初始化整个页面
+            function initializePage() {
+                initializeCards();
+                // 重新绑定所有事件监听器
+                bindEventListeners();
+            }
+            
+            // 绑定事件监听器
+            function bindEventListeners() {
+                const addCardBtn = document.getElementById('add-card-btn');
+                const customCardForm = document.getElementById('custom-card-form');
+                const submitCardBtn = document.getElementById('submit-card');
+                const aboutUsIcon = document.querySelector('.about-us-icon');
+                const aboutUsInfo = document.getElementById('about-us-info');
+                const bgColorInput = document.getElementById('bg-color');
+                const cardColorInput = document.getElementById('card-color');
+                const helpBtn = document.getElementById('help-btn');
+                const helpMenu = document.getElementById('help-menu');
+                const embedModeBtn = document.getElementById('embed-mode-btn');
+                const redirectModeBtn = document.getElementById('redirect-mode-btn');
+                
+                addCardBtn.addEventListener('click', () => {
+                    customCardForm.style.display = customCardForm.style.display === 'block' ? 'none' : 'block';
                 });
-            });
+
+                submitCardBtn.addEventListener('click', () => {
+                    const customText = document.getElementById('custom-text').value.trim();
+                    const customLink = document.getElementById('custom-link').value.trim();
+                    if (customText && customLink) {
+                        const newCard = {
+                            href: customLink,
+                            icon: 'fas fa-globe',
+                            text: customText
+                        };
+                        cardData.push(newCard);
+                        createCard(newCard);
+                        localStorage.setItem('cards', JSON.stringify(cardData));
+                        document.getElementById('custom-text').value = '';
+                        document.getElementById('custom-link').value = '';
+                        customCardForm.style.display = 'none';
+                    }
+                });
+
+                aboutUsIcon.addEventListener('click', () => {
+                    aboutUsInfo.style.display = aboutUsInfo.style.display === 'block' ? 'none' : 'block';
+                });
+
+                bgColorInput.addEventListener('input', (e) => {
+                    document.body.style.background = e.target.value;
+                    document.querySelector('footer').style.background = e.target.value;
+                });
+
+                cardColorInput.addEventListener('input', (e) => {
+                    document.querySelectorAll('.card').forEach(card => {
+                        card.style.backgroundColor = e.target.value;
+                    });
+                });
+                
+                helpBtn.addEventListener('click', () => {
+                    helpMenu.style.display = helpMenu.style.display === 'block' ? 'none' : 'block';
+                });
+                
+                // 根据当前模式设置按钮状态
+                function updateModeButtons() {
+                    if (openMode === 'embed') {
+                        embedModeBtn.classList.add('active');
+                        redirectModeBtn.classList.remove('active');
+                    } else {
+                        embedModeBtn.classList.remove('active');
+                        redirectModeBtn.classList.add('active');
+                    }
+                }
+                
+                // 初始化按钮状态
+                updateModeButtons();
+                
+                // 嵌入模式按钮点击事件
+                embedModeBtn.addEventListener('click', () => {
+                    if (openMode !== 'embed') {
+                        openMode = 'embed';
+                        localStorage.setItem('openMode', 'embed');
+                        initializeCards();
+                        updateModeButtons();
+                    }
+                });
+                
+                // 跳转模式按钮点击事件
+                redirectModeBtn.addEventListener('click', () => {
+                    if (openMode !== 'redirect') {
+                        openMode = 'redirect';
+                        localStorage.setItem('openMode', 'redirect');
+                        initializeCards();
+                        updateModeButtons();
+                    }
+                });
+            }
+            
+            // 初始化页面
+            initializePage();
         });
     </script>
 </body>
