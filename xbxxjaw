@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xxjaw - 可多工作室</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        /* 顶部导航栏 */
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 5px 20px;
+            font-size: 13px;
+            background-color: #f5f5f5;
+        }
+        
+        .top-bar a {
+            color: #333;
+            text-decoration: none;
+            margin-left: 15px;
+            line-height: 24px;
+        }
+        
+        .top-bar a:hover {
+            color: #315efb;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+        }
+        
+        /* Logo区域 */
+        .logo {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            color: #315efb;
+            margin: 0;
+        }
+        
+        /* 搜索框区域 */
+        .search-box {
+            width: 582px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 15px;
+            border: 1px solid #c4c7ce;
+            border-radius: 10px;
+            outline: none;
+            font-size: 16px;
+            box-shadow: none;
+            transition: all .3s;
+        }
+        
+        .search-input:hover, .search-input:focus {
+            border-color: #a7aab5;
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 108px;
+            height: 46px;
+            background-color: #4e6ef2;
+            color: white;
+            border: none;
+            border-radius: 0 10px 10px 0;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color .3s;
+        }
+        
+        .search-btn:hover {
+            background-color: #4662d9;
+        }
+        
+        /* 搜索引擎选择 */
+        .search-engine-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .engine-option {
+            margin: 0 10px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .engine-option.active {
+            color: #315efb;
+            font-weight: bold;
+        }
+        
+        /* 网站卡片区域 */
+        .card-container {
+            width: 760px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-container h2 {
+            font-size: 16px;
+            color: #666;
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: all .2s;
+        }
+        
+        .card:hover {
+            color: #315efb;
+            transform: translateY(-3px);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        
+        .card-icon i {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .card:hover .card-icon {
+            background-color: #e8f0fe;
+        }
+        
+        .card:hover .card-icon i {
+            color: #315efb;
+        }
+        
+        .card-name {
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #999;
+            margin-top: 50px;
+        }
+        
+        /* 添加卡片按钮 */
+        .add-card-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #4e6ef2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all .3s;
+        }
+        
+        .add-card-button:hover {
+            background-color: #4662d9;
+            transform: scale(1.1);
+        }
+        
+        /* 自定义卡片表单 */
+        .custom-card-form {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 30px;
+            width: 250px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .custom-card-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .custom-card-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4e6ef2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .custom-card-form button:hover {
+            background-color: #4662d9;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="top-bar">
+        <a href="#"><i class="fas fa-th"></i> 产品</a>
+        <a href="#" id="about-btn"><i class="fas fa-info-circle"></i> 关于</a>
+    </div>
+    
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <!-- Logo -->
+        <div class="logo">
+            <h1>xxjaw</h1>
+        </div>
+        
+        <!-- 搜索框 -->
+        <div class="search-box">
+            <input type="text" class="search-input" id="search-input" placeholder="输入关键词搜索">
+            <button class="search-btn" id="search-btn">搜索</button>
+        </div>
+        
+        <!-- 搜索引擎选择 -->
+        <div class="search-engine-selector">
+            <div class="engine-option active" data-engine="baidu">百度</div>
+            <div class="engine-option" data-engine="bing">Bing</div>
+            <div class="engine-option" data-engine="360">360搜索</div>
+            <div class="engine-option" data-engine="google">谷歌</div>
+        </div>
+        
+        <!-- 网站卡片区域 -->
+        <div class="card-container">
+            <h2>我的网站</h2>
+            <div class="card-grid" id="card-grid">
+                <!-- 卡片将通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer>
+        <p>版本：v1.1.7 增加了更多网站   增加自定义网站功能   广告全out</p>
+        <p>© 2024   版权归 可多工作室 所有</p>
+    </footer>
+    
+    <!-- 添加卡片按钮 -->
+    <div class="add-card-button" id="add-card-btn">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <!-- 自定义卡片表单 -->
+    <div class="custom-card-form" id="custom-card-form">
+        <input type="text" id="custom-text" placeholder="输入网站名称">
+        <input type="text" id="custom-link" placeholder="输入网站链接">
+        <button id="submit-card">添加卡片</button>
+    </div>
+    
+    <!-- 关于信息弹窗 -->
+    <div class="about-info" id="about-info" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.2); z-index: 1000; max-width: 500px;">
+        <h3>关于 xxjaw</h3>
+        <p>这，是可多工作室开发的帮助学习机用户访问网站的网站</p>
+        <p>xxj aw中xxj是学习机，aw是访问网站的首字母</p>
+        <a href="https://jsj.top/f/MTXVpG" style="color: #315efb; text-decoration: none;">xxj aw 建议反馈</a>
+        <div style="text-align: right; margin-top: 20px;">
+            <button id="close-about" style="padding: 5px 15px; background: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">关闭</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始卡片数据
+            const cardData = JSON.parse(localStorage.getItem('cards')) || [
+                { href: 'https://space.bilibili.com/3537115203767153', icon: 'fab fa-bilibili', text: 'B站' },
+                { href: 'https://www.baidu.com', icon: 'fas fa-search', text: '百度' },
+                { href: 'https://cn.bing.com/', icon: 'fab fa-microsoft', text: '必应' },
+                { href: 'https://haven.chat', icon: 'fas fa-comments', text: '文明聊' },
+                { href: 'https://yiyan.baidu.com/', icon: 'fas fa-robot', text: '文心一言' },
+                { href: 'https://www.google.com', icon: 'fab fa-google', text: '谷歌' },
+                { href: 'https://www.so.com', icon: 'fas fa-shield-alt', text: '360搜索' },
+                { href: 'https://www.kuaishou.com/new-reco', icon: 'fas fa-video', text: '快手' },
+                { href: 'https://www.taobao.com', icon: 'fas fa-shopping-cart', text: '淘宝' },
+                { href: 'https://www.douyin.com/user/self', icon: 'fab fa-tiktok', text: '抖音' },
+                { href: 'https://www.weibo.com', icon: 'fab fa-weibo', text: '微博' },
+                { href: 'https://www.pinduoduo.com/', icon: 'fas fa-store', text: '拼多多' },
+                { href: 'https://lcim.guozhufeng.com', icon: 'fas fa-cloud', text: '凌CIM' },
+                { href: 'https://www.ccw.site/student/65d423c0a65f1229b0d80fb0', icon: 'fas fa-graduation-cap', text: 'CCW' },
+                { href: 'https://kdgzswsz.github.io/', icon: 'fas fa-globe', text: '可多工作室' },
+                { href: 'https://tjy-gitnub.github.io/win12/desktop.html', icon: 'fab fa-windows', text: 'Win12模拟器' },
+                { href: 'https://fanyi.baidu.com/mtpe-individual/multimodal#/', icon: 'fas fa-language', text: '百度翻译' },
+                { href: 'https://mc.js.cool/', icon: 'fas fa-cube', text: 'MC触碰版' },
+                { href: 'https://poki.com/zh#utm_source=redirect-en-zh', icon: 'fas fa-gamepad', text: 'Poki游戏' },
+                { href: 'https://pan.baidu.com/disk/main#/index?category=all', icon: 'fas fa-cloud-upload-alt', text: '百度网盘' },
+                { href: 'https://fanqienovel.com', icon: 'fas fa-book', text: '番茄小说' },
+                { href: 'https://www.xiaohongshu.com/explore', icon: 'fab fa-reddit', text: '小红书' },
+                { href: 'https://www.kugou.com', icon: 'fas fa-music', text: '酷狗音乐' },
+                { href: 'https://www.qq.com', icon: 'fab fa-qq', text: '腾讯网' }
+            ];
+            
+            // 渲染卡片
+            const cardGrid = document.getElementById('card-grid');
+            
+            function renderCards() {
+                cardGrid.innerHTML = '';
+                cardData.forEach(card => {
+                    const cardElement = document.createElement('a');
+                    cardElement.className = 'card';
+                    cardElement.href = card.href;
+                    cardElement.target = '_blank';
+                    cardElement.innerHTML = `
+                        <div class="card-icon">
+                            <i class="${card.icon}"></i>
+                        </div>
+                        <div class="card-name">${card.text}</div>
+                    `;
+                    cardGrid.appendChild(cardElement);
+                });
+            }
+            
+            renderCards();
+            
+            // 搜索引擎选择
+            const engineOptions = document.querySelectorAll('.engine-option');
+            let currentEngine = 'baidu';
+            
+            engineOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    engineOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    currentEngine = option.dataset.engine;
+                });
+            });
+            
+            // 搜索功能
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            
+            function performSearch() {
+                const query = searchInput.value.trim();
+                if (!query) return;
+                
+                let searchUrl = '';
+                switch(currentEngine) {
+                    case 'baidu':
+                        searchUrl = `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`;
+                        break;
+                    case 'bing':
+                        searchUrl = `https://cn.bing.com/search?q=${encodeURIComponent(query)}`;
+                        break;
+                    case '360':
+                        searchUrl = `https://www.so.com/s?q=${encodeURIComponent(query)}`;
+                        break;
+                    case 'google':
+                        searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                        break;
+                }
+                
+                window.open(searchUrl, '_blank');
+            }
+            
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // 添加卡片功能
+            const addCardBtn = document.getElementById('add-card-btn');
+            const customCardForm = document.getElementById('custom-card-form');
+            const submitCardBtn = document.getElementById('submit-card');
+            
+            addCardBtn.addEventListener('click', () => {
+                customCardForm.style.display = customCardForm.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            submitCardBtn.addEventListener('click', () => {
+                const customText = document.getElementById('custom-text').value.trim();
+                const customLink = document.getElementById('custom-link').value.trim();
+                
+                if (customText && customLink) {
+                    // 确保链接有协议头
+                    let finalLink = customLink;
+                    if (!finalLink.startsWith('http://') && !finalLink.startsWith('https://')) {
+                        finalLink = 'https://' + finalLink;
+                    }
+                    
+                    const newCard = {
+                        href: finalLink,
+                        icon: 'fas fa-globe',
+                        text: customText
+                    };
+                    
+                    cardData.push(newCard);
+                    localStorage.setItem('cards', JSON.stringify(cardData));
+                    renderCards();
+                    
+                    // 清空表单并隐藏
+                    document.getElementById('custom-text').value = '';
+                    document.getElementById('custom-link').value = '';
+                    customCardForm.style.display = 'none';
+                }
+            });
+            
+            // 关于信息
+            const aboutBtn = document.getElementById('about-btn');
+            const aboutInfo = document.getElementById('about-info');
+            const closeAbout = document.getElementById('close-about');
+            
+            aboutBtn.addEventListener('click', () => {
+                aboutInfo.style.display = 'block';
+            });
+            
+            closeAbout.addEventListener('click', () => {
+                aboutInfo.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
