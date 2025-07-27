@@ -12,6 +12,7 @@
             padding: 0;
             color: #333;
             background-color: #f5f5f5;
+            transition: transform 0.1s ease-out;
         }
         
         /* 顶部导航栏 */
@@ -249,6 +250,43 @@
         .custom-card-form button:hover {
             background-color: #4662d9;
         }
+        
+        /* 隐藏卡片样式 */
+        .hidden-card {
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .hidden-card .card-icon {
+            background-color: transparent !important;
+        }
+        
+        .hidden-card .card-icon i {
+            color: transparent !important;
+        }
+        
+        .hidden-card .card-name {
+            color: transparent !important;
+        }
+        
+        /* 抖动动画 */
+        @keyframes shake {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-2px, -2px); }
+            20% { transform: translate(2px, -2px); }
+            30% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, -2px); }
+            70% { transform: translate(-2px, 2px); }
+            80% { transform: translate(2px, 2px); }
+            90% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        .shaking {
+            animation: shake 0.1s infinite;
+        }
     </style>
 </head>
 <body>
@@ -317,6 +355,9 @@
         </div>
     </div>
     
+    <!-- 音频元素 -->
+    <audio id="hidden-audio" src="lwwwphg.mp3" loop></audio>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // 初始卡片数据
@@ -347,8 +388,109 @@
                 { href: 'https://www.qq.com', icon: 'fab fa-qq', text: '腾讯网' }
             ];
             
+            // 添加隐藏卡片数据
+            cardData.push({
+                href: '#',
+                icon: 'fas fa-music',
+                text: '隐藏按钮',
+                hidden: true
+            });
+            
             // 渲染卡片
             const cardGrid = document.getElementById('card-grid');
+            const audioElement = document.getElementById('hidden-audio');
+            const bodyElement = document.body;
+            let isAudioPlaying = false;
+            let audioContext;
+            let analyser;
+            let dataArray;
+            let animationId;
+            let lastVolume = 0;
+            
+            // 初始化音频分析
+            function initAudioAnalysis() {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaElementSource(audioElement);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            }
+            
+            // 获取当前音量
+            function getVolume() {
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for (let i = 0; i < dataArray.length; i++) {
+                    sum += dataArray[i];
+                }
+                return sum / dataArray.length;
+            }
+            
+            // 抖动效果
+            function shakeEffect() {
+                if (!isAudioPlaying) {
+                    bodyElement.classList.remove('shaking');
+                    cancelAnimationFrame(animationId);
+                    return;
+                }
+                
+                const volume = getVolume();
+                // 平滑音量变化
+                const smoothedVolume = (lastVolume * 0.7 + volume * 0.3) / 10;
+                lastVolume = volume;
+                
+                // 根据音量调整抖动强度
+                const intensity = Math.min(smoothedVolume * 2, 10);
+                
+                if (intensity > 1) {
+                    bodyElement.classList.add('shaking');
+                    // 动态调整抖动强度
+                    document.styleSheets[0].insertRule(`
+                        @keyframes shake {
+                            0% { transform: translate(0, 0); }
+                            10% { transform: translate(-${intensity}px, -${intensity}px); }
+                            20% { transform: translate(${intensity}px, -${intensity}px); }
+                            30% { transform: translate(-${intensity}px, ${intensity}px); }
+                            40% { transform: translate(${intensity}px, ${intensity}px); }
+                            50% { transform: translate(-${intensity}px, -${intensity}px); }
+                            60% { transform: translate(${intensity}px, -${intensity}px); }
+                            70% { transform: translate(-${intensity}px, ${intensity}px); }
+                            80% { transform: translate(${intensity}px, ${intensity}px); }
+                            90% { transform: translate(-${intensity}px, -${intensity}px); }
+                            100% { transform: translate(0, 0); }
+                        }
+                    `, document.styleSheets[0].cssRules.length);
+                } else {
+                    bodyElement.classList.remove('shaking');
+                }
+                
+                animationId = requestAnimationFrame(shakeEffect);
+            }
+            
+            function toggleAudio() {
+                if (isAudioPlaying) {
+                    audioElement.pause();
+                    isAudioPlaying = false;
+                    bodyElement.classList.remove('shaking');
+                    cancelAnimationFrame(animationId);
+                } else {
+                    // 用户交互后初始化音频上下文
+                    if (!audioContext) {
+                        initAudioAnalysis();
+                    }
+                    
+                    audioElement.play()
+                        .then(() => {
+                            isAudioPlaying = true;
+                            shakeEffect();
+                        })
+                        .catch(error => {
+                            console.error('播放失败:', error);
+                        });
+                }
+            }
             
             function renderCards() {
                 cardGrid.innerHTML = '';
@@ -357,6 +499,16 @@
                     cardElement.className = 'card';
                     cardElement.href = card.href;
                     cardElement.target = '_blank';
+                    
+                    if (card.hidden) {
+                        cardElement.classList.add('hidden-card');
+                        cardElement.onclick = function(e) {
+                            e.preventDefault();
+                            toggleAudio();
+                            return false;
+                        };
+                    }
+                    
                     cardElement.innerHTML = `
                         <div class="card-icon">
                             <i class="${card.icon}"></i>
@@ -441,7 +593,7 @@
                         text: customText
                     };
                     
-                    cardData.push(newCard);
+                    cardData.splice(cardData.length - 1, 0, newCard); // 在隐藏卡片前添加新卡片
                     localStorage.setItem('cards', JSON.stringify(cardData));
                     renderCards();
                     
