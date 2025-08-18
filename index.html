@@ -46,6 +46,10 @@
       background-color: #ff9800;
       color: white;
     }
+    .test-btn {
+      background-color: #9c27b0;
+      color: white;
+    }
     .btn:hover {
       opacity: 0.9;
     }
@@ -83,11 +87,12 @@
   <div class="container">
     <h1>请选择xxjaw版本</h1>
     <button class="btn new-btn" onclick="openNewVersion()">新版</button>
-    <button class="btn old-btn" onclick="openOldVersion()">旧版</button>
-    <button class="btn info-btn" onclick="toggleInfo()">显示说明</button>
+    <button class="btn old-btn" onclick="openOldVersion()">旧版(即将关闭)</button>
+    <button class="btn test-btn" onclick="openTestVersion()">最 新 版(点击加入内测版)</button>
+    <button class="btn info-btn" onclick="toggleInfo()">说明</button>
     
     <div id="info-text">
-      推荐用内测版，旧版和新版不好用，以后可能也许会删掉，了解更多请找 <span class="link" onclick="showChoice()">可多工作室 牢w</span>。
+      推荐用内测版，其他版本不出意外以后都会删掉，了解更多请找 <span class="link" onclick="showChoice()">牢w</span>。
       <div id="choice-box">
         <button class="choice-btn" onclick="gotoC()"> C 站 </button>
         <button class="choice-btn" onclick="gotoB()"> B 站 </button>
@@ -102,6 +107,15 @@
 
     function openOldVersion() {
       window.location.href = "kdss.html";
+    }
+
+    function openTestVersion() {
+      const feedbackUrl = "https://code.xueersi.com/home/project/detail?lang=code&pid=63843717&version=webpy&form=webpy&langType=webpy";
+      const message = "感谢您的配合，请定期向我们反馈该版本的问题，谢谢配合\n\n反馈到这里: " + feedbackUrl;
+      
+      if (confirm(message)) {
+        window.location.href = "neicexxjaw.html";
+      }
     }
 
     function toggleInfo() {
