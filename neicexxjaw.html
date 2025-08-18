@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>xxjaw - 可多工作室</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    /* ============ 基础与主题（CSS变量） ============ */
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #222;
+      --text-weak: #667085;
+      --divider: #eef0f4;
+
+      --primary: #4e6ef2; /* 可在设置里自定义 */
+      --primary-weak: color-mix(in srgb, var(--primary) 12%, white);
+
+      --radius: 16px;      /* 卡片圆角，可在设置里调 */
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --shadow-hover: 0 10px 30px rgba(0,0,0,0.12);
+      --scale: 1;          /* UI缩放 */
+    }
+    [data-theme="dark"]{
+      --bg: #0f1220;
+      --card: #151a2d;
+      --text: #e7e9f3;
+      --text-weak: #9aa3b2;
+      --divider: #242b45;
+      --shadow: 0 8px 24px rgba(0,0,0,0.35);
+      --shadow-hover: 0 10px 30px rgba(0,0,0,0.45);
+    }
+
+    *{box-sizing: border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans SC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transform: scale(var(--scale));
+      transform-origin: top center;
+      transition: background .35s ease, color .35s ease, transform .25s ease;
+    }
+    a{color:inherit; text-decoration:none}
+    button{font:inherit}
+
+    /* ============ 顶部栏 ============ */
+    .top-bar{
+      position: sticky; top:0; z-index: 50;
+      display:flex; align-items:center; justify-content:flex-end;
+      gap:10px; padding: 10px 16px; backdrop-filter: saturate(1.2) blur(6px);
+      background: color-mix(in srgb, var(--bg) 70%, transparent);
+      border-bottom: 1px solid var(--divider);
+    }
+    .top-btn{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius: 10px; border:1px solid var(--divider); background: var(--card); box-shadow: var(--shadow); cursor:pointer; transition: .25s}
+    .top-btn:hover{transform: translateY(-1px); box-shadow: var(--shadow-hover)}
+
+    /* ============ 主区域 ============ */
+    .main{max-width: 1080px; margin: 0 auto; padding: 28px 16px 80px}
+    .logo{display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom: 18px}
+    .logo h1{margin:0; font-size: clamp(22px, 4.5vw, 34px); letter-spacing:.5px; color: var(--primary)}
+    .logo .sub{font-size: 13px; color: var(--text-weak)}
+
+    /* ============ 搜索区域 ============ */
+    .search{
+      position: relative; width: min(720px, 94%); margin: 14px auto 18px; display: grid; grid-template-columns: 1fr auto; gap: 10px;
+    }
+    .search input{
+      height: 52px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--divider); background: var(--card); color: var(--text);
+      outline: none; transition: .25s; box-shadow: var(--shadow);
+    }
+    .search input:focus{border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-weak)}
+    .search button{
+      height: 52px; padding: 0 18px; border-radius: 14px; border: none; cursor: pointer; color: #fff; background: var(--primary);
+      display:flex; align-items:center; gap:8px; box-shadow: var(--shadow); transition: .25s;
+    }
+    .search button:hover{filter: brightness(1.05); transform: translateY(-1px)}
+
+    .engines{display:flex; flex-wrap: wrap; gap: 10px; justify-content:center; margin: 10px 0 22px}
+    .engine{padding:8px 12px; border-radius: 999px; border:1px solid var(--divider); background: var(--card); color: var(--text-weak); cursor:pointer; transition:.2s}
+    .engine.active{color: var(--primary); background: var(--primary-weak); border-color: color-mix(in srgb, var(--primary) 40%, var(--divider))}
+
+    /* ============ 卡片容器 ============ */
+    .section{background: var(--card); border:1px solid var(--divider); border-radius: 20px; padding: 18px; box-shadow: var(--shadow)}
+    .section h2{margin:2px 6px 14px; font-size: 15px; color: var(--text-weak); font-weight:600}
+
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+
+    .card{
+      position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px 6px; border-radius: var(--radius);
+      border:1px solid var(--divider); background: linear-gradient(180deg, var(--card), color-mix(in srgb, var(--card) 90%, #000000 4%));
+      box-shadow: var(--shadow); transition:.2s; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    }
+    .card:active{transform: scale(.98)}
+    .card:hover{transform: translateY(-3px); box-shadow: var(--shadow-hover)}
+
+    .icon{width:56px; height:56px; border-radius: 50%; display:grid; place-items:center; background: color-mix(in srgb, var(--primary) 10%, var(--card)); border: 1px solid var(--divider)}
+    .icon i{font-size: 22px; color: var(--text-weak)}
+    .card:hover .icon i{color: var(--primary)}
+    .name{font-size: 13px; text-align:center; line-height:1.1}
+
+    /* 自定义卡片操作按钮（仅对用户卡片显示） */
+    .card .ops{position:absolute; top:8px; right:8px; display:flex; gap:6px; opacity:0; transition:.2s}
+    .card:hover .ops{opacity:1}
+    .op-btn{width:28px; height:28px; display:grid; place-items:center; border-radius:8px; background: var(--card); border:1px solid var(--divider); cursor:pointer}
+    .op-btn:hover{background: var(--primary-weak); color: var(--primary)}
+
+    /* ============ 浮动添加按钮 ============ */
+    .fab{position: fixed; right: 20px; bottom: 22px; z-index: 40; width:64px; height:64px; border-radius: 50%; background: var(--primary); color:#fff; display:grid; place-items:center; box-shadow: var(--shadow-hover); cursor:pointer; transition:.25s}
+    .fab:hover{transform: scale(1.06) rotate(15deg)}
+
+    /* ============ 抽屉（设置面板） ============ */
+    .backdrop{position:fixed; inset:0; background: rgba(0,0,0,.28); opacity:0; pointer-events:none; transition:.25s; z-index: 80}
+    .backdrop.show{opacity:1; pointer-events:auto}
+    .drawer{position: fixed; right:0; top:0; bottom:0; width:min(420px, 92%); background: var(--card); border-left: 1px solid var(--divider); box-shadow: var(--shadow-hover); transform: translateX(100%); transition:.35s ease; z-index: 90; display:flex; flex-direction:column}
+    .drawer.show{transform: translateX(0)}
+    .drawer header{display:flex; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid var(--divider)}
+    .drawer h3{margin:0; font-size: 16px}
+    .drawer .body{padding: 14px 16px 120px; overflow:auto; display:flex; flex-direction:column; gap:14px}
+    .row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border:1px solid var(--divider); border-radius: 14px}
+    .row label{font-size:14px; color: var(--text-weak)}
+    .row input[type="color"]{width:42px; height:28px; border:none; background: transparent; padding:0}
+    .row select, .row input[type="range"], .row input[type="text"], .row input[type="url"]{width: 58%; max-width:280px; padding:8px 10px; border-radius: 10px; border:1px solid var(--divider); background: var(--card); color: var(--text)}
+    .drawer .footer{position: sticky; bottom:0; margin-top:auto; background: linear-gradient(180deg, transparent, var(--card) 20%, var(--card)); border-top:1px solid var(--divider); padding: 12px 16px; display:flex; gap:10px}
+    .btn{padding:10px 12px; border-radius:12px; border:1px solid var(--divider); background: var(--card); cursor:pointer}
+    .btn.primary{background: var(--primary); color:#fff; border-color: transparent}
+
+    /* ============ 轻弹窗（添加/编辑卡片） ============ */
+    .modal{position: fixed; inset:0; display:grid; place-items:center; background: rgba(0,0,0,.3); opacity:0; pointer-events:none; transition:.25s; z-index: 85}
+    .modal.show{opacity:1; pointer-events:auto}
+    .dialog{width:min(420px, 92%); background: var(--card); border:1px solid var(--divider); border-radius: 16px; box-shadow: var(--shadow-hover); padding: 14px}
+    .dialog h4{margin: 6px 6px 12px}
+    .form{display:flex; flex-direction:column; gap: 10px}
+    .form input{padding:10px 12px; border-radius: 10px; border:1px solid var(--divider); background: var(--card); color: var(--text)}
+    .dialog .actions{display:flex; justify-content:flex-end; gap:10px; padding-top:6px}
+
+    /* ============ 内嵌浏览器（嵌入模式） ============ */
+    .viewer{position: fixed; inset: 16px; border-radius: 16px; background: var(--card); border:1px solid var(--divider); box-shadow: var(--shadow-hover); display:none; flex-direction:column; z-index: 70}
+    .viewer header{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border-bottom:1px solid var(--divider)}
+    .viewer .title{font-size: 14px; color: var(--text-weak); overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+    .viewer iframe{border:0; width:100%; height: calc(100% - 46px); border-radius: 0 0 16px 16px}
+
+    /* ============ 页脚 ============ */
+    footer{max-width:1080px; margin: 24px auto 40px; padding: 0 16px; color: var(--text-weak); font-size: 12px}
+
+    /* ============ 平板优化断点 ============ */
+    @media (max-width: 1024px){
+      .grid{grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))}
+      .icon{width:60px; height:60px}
+      .search input, .search button{height:56px}
+    }
+    @media (max-width: 768px){
+      .grid{grid-template-columns: repeat(3, 1fr)}
+      .search{width: min(680px, 94%)}
+    }
+    @media (max-width: 560px){
+      .grid{grid-template-columns: repeat(2, 1fr)}
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部 -->
+  <div class="top-bar">
+    <button id="btnSettings" class="top-btn"><i class="fa-solid fa-gear"></i> 设置</button>
+  </div>
+
+  <main class="main">
+    <div class="logo">
+      <h1>xxjaw</h1>
+      <div class="sub">为平板触控优化 · 丝滑灵动</div>
+    </div>
+
+    <!-- 搜索 -->
+    <div class="search">
+      <input id="q" type="text" placeholder="输入关键词搜索，先选择引擎哦～" />
+      <button id="btnSearch"><i class="fa-solid fa-magnifying-glass"></i> 搜索</button>
+    </div>
+    <div class="engines" id="engines"></div>
+
+    <!-- 卡片区 -->
+    <section class="section">
+      <h2>我的网站</h2>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <!-- 浮动添加按钮 -->
+  <div class="fab" id="fab"><i class="fa-solid fa-plus"></i></div>
+
+  <!-- 设置抽屉 -->
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="drawer" id="drawer">
+    <header>
+      <h3>设置</h3>
+      <button class="btn" id="btnCloseDrawer"><i class="fa-solid fa-xmark"></i></button>
+    </header>
+    <div class="body">
+      <div class="row">
+        <label>主题模式</label>
+        <select id="themeMode">
+          <option value="light">浅色</option>
+          <option value="dark">深色</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>主色</label>
+        <input id="primaryColor" type="color" value="#4e6ef2" />
+      </div>
+      <div class="row">
+        <label>卡片圆角</label>
+        <input id="radiusRange" type="range" min="8" max="28" step="1" value="16" />
+      </div>
+      <div class="row">
+        <label>UI 缩放</label>
+        <input id="scaleRange" type="range" min="0.9" max="1.2" step="0.01" value="1" />
+      </div>
+      <div class="row">
+        <label>卡片点击方式</label>
+        <select id="openMode">
+          <option value="newtab">新窗口</option>
+          <option value="embed">嵌入页面</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>版本信息</label>
+        <div style="display:flex; gap:8px">
+          <div style="padding:8px 10px; border-radius:10px; border:1px solid var(--divider); font-size:13px">v2.0.0</div>
+        </div>
+      </div>
+      <div class="row">
+        <label>教程</label>
+        <button class="btn" id="btnTutorial">查看教程</button>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn" id="btnReset">恢复默认</button>
+      <button class="btn primary" id="btnSave">保存设置</button>
+    </div>
+  </aside>
+
+  <!-- 添加/编辑卡片弹窗 -->
+  <div class="modal" id="modal">
+    <div class="dialog">
+      <h4 id="modalTitle">添加卡片</h4>
+      <div class="form">
+        <input id="inputName" type="text" placeholder="网站名称，如：B站" />
+        <input id="inputUrl" type="url" placeholder="网站链接，如：https://example.com" />
+        <div style="font-size:12px; color:var(--text-weak); padding:0 4px">提示：长按卡片可编辑或删除</div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btnCancel">取消</button>
+        <button class="btn primary" id="btnOk">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 嵌入查看器 -->
+  <div class="viewer" id="viewer">
+    <header>
+      <div class="title" id="viewerTitle">正在打开…</div>
+      <div style="display:flex; gap:8px">
+        <button class="btn" id="viewerOpenNew"><i class="fa-solid fa-up-right-from-square"></i></button>
+        <button class="btn" id="viewerClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </header>
+    <iframe id="viewerFrame" allow="geolocation; microphone; camera; clipboard-read; clipboard-write; fullscreen; autoplay"></iframe>
+  </div>
+
+  <script>
+    // ================== 数据与存储 ==================
+    const LS_KEYS = {
+      settings: 'xxjaw_settings',
+      custom: 'xxjaw_custom_cards'
+    }
+
+    const DEFAULT_CARDS = [
+      { href: 'https://space.bilibili.com/3537115203767153', icon: 'fab fa-bilibili', text: 'B站' },
+      { href: 'https://www.baidu.com', icon: 'fas fa-search', text: '百度' },
+      { href: 'https://cn.bing.com/', icon: 'fab fa-microsoft', text: '必应' },
+      { href: 'https://haven.chat', icon: 'fas fa-comments', text: '文明聊' },
+      { href: 'https://yiyan.baidu.com/', icon: 'fas fa-robot', text: '文心一言' },
+      { href: 'https://www.so.com', icon: 'fas fa-shield-alt', text: '360搜索' },
+      { href: 'https://www.kuaishou.com/new-reco', icon: 'fas fa-video', text: '快手' },
+      { href: 'https://www.taobao.com', icon: 'fas fa-shopping-cart', text: '淘宝' },
+      { href: 'https://www.douyin.com', icon: 'fab fa-tiktok', text: '抖音' },
+      { href: 'https://www.weibo.com', icon: 'fab fa-weibo', text: '微博' },
+      { href: 'https://www.pinduoduo.com/', icon: 'fas fa-store', text: '拼多多' },
+      { href: 'https://lcim.guozhufeng.com', icon: 'fas fa-cloud', text: '凌CIM' },
+      { href: 'https://www.ccw.site/student/65d423c0a65f1229b0d80fb0', icon: 'fas fa-graduation-cap', text: 'CCW' },
+      { href: 'https://kdgzswsz.github.io/', icon: 'fas fa-globe', text: '可多工作室' },
+      { href: 'https://tjy-gitnub.github.io/win12/desktop.html', icon: 'fab fa-windows', text: 'Win12模拟器' },
+      { href: 'https://fanyi.baidu.com', icon: 'fas fa-language', text: '百度翻译' },
+      { href: 'https://mc.js.cool/', icon: 'fas fa-cube', text: 'MC触碰版' },
+      { href: 'https://poki.com/zh', icon: 'fas fa-gamepad', text: 'Poki游戏' },
+      { href: 'https://pan.baidu.com', icon: 'fas fa-cloud-upload-alt', text: '百度网盘' },
+      { href: 'https://fanqienovel.com', icon: 'fas fa-book', text: '番茄小说' },
+      { href: 'https://www.xiaohongshu.com/explore', icon: 'fab fa-reddit', text: '小红书' },
+      { href: 'https://www.kugou.com', icon: 'fas fa-music', text: '酷狗音乐' },
+      { href: 'https://www.qq.com', icon: 'fab fa-qq', text: '腾讯网' }
+    ];
+
+    const DEFAULT_SETTINGS = {
+      theme: 'light',      // light | dark
+      primary: '#4e6ef2',
+      radius: 16,
+      scale: 1,
+      openMode: 'newtab'   // newtab | embed
+    }
+
+    function loadSettings(){
+      try{ return JSON.parse(localStorage.getItem(LS_KEYS.settings)) || {...DEFAULT_SETTINGS} }catch{ return {...DEFAULT_SETTINGS} }
+    }
+    function saveSettings(s){ localStorage.setItem(LS_KEYS.settings, JSON.stringify(s)) }
+
+    function loadCustom(){
+      try{ return JSON.parse(localStorage.getItem(LS_KEYS.custom)) || [] }catch{ return [] }
+    }
+    function saveCustom(list){ localStorage.setItem(LS_KEYS.custom, JSON.stringify(list)) }
+
+    // ================== 搜索引擎 ==================
+    const ENGINES = [
+      {key:'baidu', name:'百度', url:q=>`https://www.baidu.com/s?wd=${encodeURIComponent(q)}`},
+      {key:'bing', name:'Bing', url:q=>`https://cn.bing.com/search?q=${encodeURIComponent(q)}`},
+      {key:'so', name:'360搜索', url:q=>`https://www.so.com/s?q=${encodeURIComponent(q)}`}
+    ]
+
+    // ================== 状态 ==================
+    const state = {
+      settings: loadSettings(),
+      custom: loadCustom(),
+      engine: 'baidu',
+      editingId: null // 正在编辑的自定义卡片 id（数组索引）
+    }
+
+    // ================== DOM refs ==================
+    const grid = document.getElementById('grid');
+    const enginesEl = document.getElementById('engines');
+    const inputQ = document.getElementById('q');
+    const btnSearch = document.getElementById('btnSearch');
+
+    const backdrop = document.getElementById('backdrop');
+    const drawer = document.getElementById('drawer');
+    const btnSettings = document.getElementById('btnSettings');
+    const btnCloseDrawer = document.getElementById('btnCloseDrawer');
+
+    const themeMode = document.getElementById('themeMode');
+    const primaryColor = document.getElementById('primaryColor');
+    const radiusRange = document.getElementById('radiusRange');
+    const scaleRange = document.getElementById('scaleRange');
+    const openMode = document.getElementById('openMode');
+
+    const btnReset = document.getElementById('btnReset');
+    const btnSave = document.getElementById('btnSave');
+    const btnTutorial = document.getElementById('btnTutorial');
+
+    const fab = document.getElementById('fab');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const inputName = document.getElementById('inputName');
+    const inputUrl = document.getElementById('inputUrl');
+    const btnCancel = document.getElementById('btnCancel');
+    const btnOk = document.getElementById('btnOk');
+
+    const viewer = document.getElementById('viewer');
+    const viewerFrame = document.getElementById('viewerFrame');
+    const viewerTitle = document.getElementById('viewerTitle');
+    const viewerClose = document.getElementById('viewerClose');
+    const viewerOpenNew = document.getElementById('viewerOpenNew');
+
+    // ================== 渲染 ==================
+    function applyTheme(){
+      document.documentElement.setAttribute('data-theme', state.settings.theme);
+      document.documentElement.style.setProperty('--primary', state.settings.primary);
+      document.documentElement.style.setProperty('--radius', state.settings.radius + 'px');
+      document.documentElement.style.setProperty('--scale', state.settings.scale);
+      // 同步控件
+      themeMode.value = state.settings.theme;
+      primaryColor.value = state.settings.primary;
+      radiusRange.value = state.settings.radius;
+      scaleRange.value = state.settings.scale;
+      openMode.value = state.settings.openMode;
+    }
+
+    function renderEngines(){
+      enginesEl.innerHTML = '';
+      ENGINES.forEach(e => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'engine' + (state.engine===e.key?' active':'');
+        b.textContent = e.name;
+        b.addEventListener('click', ()=>{
+          state.engine = e.key; renderEngines(); inputQ.focus();
+        })
+        enginesEl.appendChild(b);
+      })
+    }
+
+    function getAllCards(){
+      // 合并默认和自定义
+      const custom = state.custom.map((c, idx)=> ({...c, __id: idx, __user: true}));
+      const builtins = DEFAULT_CARDS.map(c => ({...c, __user:false}));
+      return [...builtins, ...custom];
+    }
+
+    function normalizeUrl(url){
+      if(!/^https?:\/\//i.test(url)) return 'https://' + url; return url;
+    }
+
+    function openCard(card){
+      const href = normalizeUrl(card.href);
+      if(state.settings.openMode === 'embed'){
+        // 百度搜索强制使用新标签页打开
+        if(href.includes('baidu.com/s?')){
+          window.open(href, '_blank');
+          return;
+        }
+        
+        viewer.style.display = 'flex';
+        viewerTitle.textContent = card.text + ' · 内嵌查看';
+        viewerFrame.src = href;
+      }else{
+        window.open(href, '_blank');
+      }
+    }
+
+    function renderCards(){
+      grid.innerHTML = '';
+      getAllCards().forEach(card => {
+        const a = document.createElement('div');
+        a.className = 'card';
+        a.innerHTML = `
+          <div class="icon"><i class="${card.icon}"></i></div>
+          <div class="name">${card.text}</div>
+        `;
+        a.addEventListener('click', (e)=>{
+          // 避免点击操作按钮触发打开
+          if(e.target.closest('.ops')) return;
+          openCard(card);
+        });
+
+        // 所有卡片都支持长按编辑
+        const ops = document.createElement('div'); ops.className = 'ops';
+        const bEdit = document.createElement('div'); bEdit.className = 'op-btn'; bEdit.title = '编辑'; bEdit.innerHTML = '<i class="fa-solid fa-pen"></i>'; 
+        const bDel = document.createElement('div'); bDel.className = 'op-btn'; bDel.title = '删除'; bDel.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        ops.appendChild(bEdit); ops.appendChild(bDel); a.appendChild(ops);
+
+        // 触控友好：长按进入编辑
+        let pressTimer;
+        a.addEventListener('touchstart', ()=>{pressTimer = setTimeout(()=> bEdit.click(), 500)}, {passive:true});
+        a.addEventListener('touchend', ()=> clearTimeout(pressTimer));
+
+        bEdit.addEventListener('click', ()=>{
+          state.editingId = card.__id;
+          modalTitle.textContent = '编辑卡片';
+          inputName.value = card.text; 
+          inputUrl.value = card.href; 
+          showModal(true);
+        })
+        
+        bDel.addEventListener('click', ()=>{
+          if(confirm(`确定删除「${card.text}」吗？`)){
+            if(card.__user){
+              state.custom.splice(card.__id, 1); 
+              saveCustom(state.custom); 
+            }else{
+              // 默认卡片不能删除，只能隐藏
+              state.custom.push({...card, __hidden: true});
+              saveCustom(state.custom);
+            }
+            renderCards();
+          }
+        })
+        
+        grid.appendChild(a);
+      })
+      
+      // 添加"添加卡片"按钮
+      const addCard = document.createElement('div');
+      addCard.className = 'card';
+      addCard.innerHTML = `
+        <div class="icon"><i class="fas fa-plus"></i></div>
+        <div class="name">添加卡片</div>
+      `;
+      addCard.addEventListener('click', ()=> {
+        state.editingId = null;
+        modalTitle.textContent = '添加卡片';
+        inputName.value = ''; 
+        inputUrl.value = '';
+        showModal(true);
+      });
+      grid.appendChild(addCard);
+    }
+
+    // ================== 搜索 ==================
+    function doSearch(){
+      const q = inputQ.value.trim(); if(!q) return;
+      const eng = ENGINES.find(e=>e.key===state.engine) || ENGINES[0];
+      const url = eng.url(q);
+      
+      // 百度搜索强制使用新标签页打开
+      if(state.settings.openMode === 'embed' && eng.key === 'baidu'){
+        window.open(url, '_blank');
+        return;
+      }
+      
+      if(state.settings.openMode === 'embed'){
+        viewer.style.display = 'flex';
+        viewerTitle.textContent = eng.name + ' · 搜索：' + q;
+        viewerFrame.src = url;
+      }else{
+        window.open(url, '_blank');
+      }
+    }
+
+    // ================== 模态框 ==================
+    function showModal(v){ modal.classList.toggle('show', !!v) }
+
+    // ================== 设置抽屉 ==================
+    function openDrawer(v){
+      backdrop.classList.toggle('show', !!v);
+      drawer.classList.toggle('show', !!v);
+    }
+
+    // ================== 教程 ==================
+    function showTutorial(){
+      const tutorialText = `xxjaw 使用教程
+
+1. 添加卡片
+- 点击右下角"+"按钮或"添加卡片"卡片
+- 输入网站名称和URL
+- 点击确定保存
+
+2. 编辑/删除卡片
+- 长按卡片或点击右上角编辑按钮
+- 修改名称或URL后保存
+- 点击删除按钮可删除卡片
+
+3. 搜索功能
+- 先选择搜索引擎
+- 输入关键词后点击搜索
+- 百度搜索会自动在新窗口打开
+
+4. 设置
+- 主题模式: 浅色/深色
+- 主色: 自定义界面主色调
+- 卡片圆角: 调整卡片圆角大小
+- UI缩放: 调整界面大小
+- 卡片点击方式: 新窗口或嵌入页面
+
+5. 嵌入模式
+- 部分网站可能无法正常显示
+- 可随时切换回新窗口模式
+- 百度搜索会自动使用新窗口`;
+
+      alert(tutorialText);
+    }
+
+    // ================== 事件绑定 ==================
+    btnSearch.addEventListener('click', doSearch);
+    inputQ.addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch() });
+
+    btnSettings.addEventListener('click', ()=> openDrawer(true));
+    btnCloseDrawer.addEventListener('click', ()=> openDrawer(false));
+    backdrop.addEventListener('click', ()=> openDrawer(false));
+
+    // 设置控件即改即显（先不保存，点保存才落盘）
+    themeMode.addEventListener('change', ()=>{ state.settings.theme = themeMode.value; applyTheme() })
+    primaryColor.addEventListener('input', ()=>{ state.settings.primary = primaryColor.value; applyTheme() })
+    radiusRange.addEventListener('input', ()=>{ state.settings.radius = +radiusRange.value; applyTheme() })
+    scaleRange.addEventListener('input', ()=>{ state.settings.scale = +scaleRange.value; applyTheme() })
+    openMode.addEventListener('change', ()=>{ 
+      state.settings.openMode = openMode.value; 
+      if(openMode.value === 'embed'){
+        alert('切换为嵌入页面模式\n\n注意：部分网站可能无法正常显示，但有些原本打不开的网站可能可以打开。\n百度搜索会自动使用新窗口模式。');
+      }
+    })
+
+    btnSave.addEventListener('click', ()=>{ saveSettings(state.settings); openDrawer(false) })
+    btnReset.addEventListener('click', ()=>{
+      if(confirm('恢复默认设置并重置自定义颜色等？')){
+        state.settings = {...DEFAULT_SETTINGS}; applyTheme(); saveSettings(state.settings);
+      }
+    })
+    
+    btnTutorial.addEventListener('click', showTutorial);
+
+    // 添加卡片
+    fab.addEventListener('click', ()=>{
+      state.editingId = null;
+      modalTitle.textContent = '添加卡片';
+      inputName.value = ''; inputUrl.value = '';
+      showModal(true);
+    })
+    btnCancel.addEventListener('click', ()=> showModal(false))
+    btnOk.addEventListener('click', ()=>{
+      const name = inputName.value.trim();
+      let url = inputUrl.value.trim();
+      if(!name || !url) { alert('请输入名称和链接'); return; }
+      url = normalizeUrl(url);
+      const item = { href: url, icon: 'fas fa-globe', text: name };
+      if(state.editingId===null){
+        state.custom.push(item);
+      }else{
+        state.custom[state.editingId] = item;
+      }
+      saveCustom(state.custom); renderCards(); showModal(false);
+    })
+    modal.addEventListener('click', e=>{ if(e.target===modal) showModal(false) })
+
+    // 嵌入查看器
+    viewerClose.addEventListener('click', ()=>{ viewer.style.display = 'none'; viewerFrame.src = 'about:blank' })
+    viewerOpenNew.addEventListener('click', ()=>{
+      const url = viewerFrame.src; if(url && url!=='about:blank') window.open(url, '_blank');
+    })
+
+    // ================== 初始化 ==================
+    applyTheme();
+    renderEngines();
+    renderCards();
+  </script>
+</body>
+</html>
